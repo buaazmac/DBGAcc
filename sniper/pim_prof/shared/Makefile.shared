@@ -1,0 +1,12 @@
+include ../../config/buildconf.makefile
+
+CC=$(SNIPER_CC)
+LDFLAGS=$(SNIPER_LDFLAGS)
+CFLAGS=$(SNIPER_CFLAGS)
+
+../../config/buildconf.makefile:
+	@echo
+	@echo
+	@echo 'Error: A compiled version of Sniper is required to run the test applications'
+	@echo
+	@false
