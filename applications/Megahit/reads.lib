@@ -1,0 +1,2 @@
+/media/zmac/Research/megahit/test_data/ecoli_paired1.fq,/media/zmac/Research/megahit/test_data/ecoli_paired2.fq
+pe /media/zmac/Research/megahit/test_data/ecoli_paired1.fq /media/zmac/Research/megahit/test_data/ecoli_paired2.fq
