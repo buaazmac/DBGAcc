@@ -8,6 +8,8 @@
 #include "lock.h"
 #include "subsecond_time.h"
 
+using namespace std;
+
 class NetworkModelEMeshHopByHop : public NetworkModel
 {
    public:
