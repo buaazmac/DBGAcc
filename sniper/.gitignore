@@ -20,6 +20,7 @@ sim.stats.base
 sim.stats.delta
 sim.stats.db
 sim.stats.sqlite3
+mem.trace
 appdebug_port.out
 debug_offset.out
 graphite.out
