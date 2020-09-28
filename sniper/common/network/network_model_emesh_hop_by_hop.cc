@@ -196,7 +196,7 @@ NetworkModelEMeshHopByHop::calculateEdgeVaults(){
                int HMC_width = mesh_width / 4;
             int HMC_height = mesh_height / 4;
 
-            LOG_ASSERT_ERROR(HMC_width >=2 && HMC_height >=2 || (HMC_width == 1 && HMC_height == 1), 
+            LOG_ASSERT_ERROR((HMC_width >=2 && HMC_height >=2) || (HMC_width == 1 && HMC_height == 1), 
                "HMC 1.0 topology error, make sure HMC_width and HMC_height are at least 2 or both are 1 (single cube)");
           
             for(int i=0;i<=HMC_width-2;i++){
@@ -229,30 +229,30 @@ NetworkModelEMeshHopByHop::calculateEdgeVaults(){
             LOG_ASSERT_ERROR(mesh_width % 8 == 0 && mesh_height % 4 == 0, "HMC2.0 topology error, WIDTH should be a multiple of 8 and HEIGHT should be a multiple of 4");
             int HMC_width = mesh_width / 8;
             int HMC_height = mesh_height / 4;
-            LOG_ASSERT_ERROR(HMC_width > 1 && HMC_height > 1, "HMC2.0 topology error, current config is a daisy_chain.");
+            LOG_ASSERT_ERROR((HMC_width > 1 && HMC_height > 1) || (HMC_width == 1 && HMC_height == 1), "HMC2.0 topology error, current config is a daisy_chain.");
 
             for(int i=0;i<=HMC_width-2;i++){
                   for(int j=0;j<HMC_height*4;j++){
                      //cout << "right: " << to_string(7 + HMC_width*8*j + i*8) << endl;
-                     m_list_right.push_back(3 + HMC_width*4*j + i*4);
+                     m_list_right.push_back(7 + HMC_width*8*j + i*8);
                   }
             }
             for(int i=0;i<=HMC_width-2;i++){
                   for(int j=0;j<HMC_height*4;j++){
                      //cout << "left: " << to_string(8 + HMC_width*8*j + i*8) << endl;
-                     m_list_left.push_back(4 + HMC_width*4*j + i*4);
+                     m_list_left.push_back(8 + HMC_width*8*j + i*8);
                   }
             }
             for(int i=0;i<HMC_height-1;i++){
                      for(int j=0;j<HMC_width*8;j++){
                         //cout << "down: " << to_string(24*HMC_width + 32 * HMC_width * i + j) << endl;
-                     m_list_down.push_back(12*HMC_width + 16 * HMC_width * i + j);
+                     m_list_down.push_back(24*HMC_width + 32 * HMC_width * i + j);
                   }
             }
             for(int i=0;i<HMC_height-1;i++){
                      for(int j=0;j<HMC_height*8;j++){
                      //cout << "up: " << to_string(32*HMC_width + 32 * HMC_width * i + j) << endl;
-                  m_list_up.push_back(16*HMC_width + 16 * HMC_width * i + j);
+                  m_list_up.push_back(32*HMC_width + 32 * HMC_width * i + j);
                   }
             }
          } /* end grid quadrant 8 */
@@ -273,41 +273,41 @@ NetworkModelEMeshHopByHop::createQueueModels(String name)
    bool up = std::find(m_list_up.begin(), m_list_up.end(), m_core_id) != m_list_up.end();
    bool down = std::find(m_list_down.begin(), m_list_down.end(), m_core_id) != m_list_down.end();
    if(!right && !left && !up && !down){
-       cout << "[LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " all unmodified queues" << endl;
+       cout << "################ [LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " all unmodified queues" << endl;
        m_queue_models[DOWN] = QueueModel::create(name+".link-down", m_core_id, m_queue_model_type, min_processing_time);
          m_queue_models[LEFT] = QueueModel::create(name+".link-left", m_core_id, m_queue_model_type, min_processing_time);
          m_queue_models[UP] = QueueModel::create(name+".link-up", m_core_id, m_queue_model_type, min_processing_time);
          m_queue_models[RIGHT] = QueueModel::create(name+".link-right", m_core_id, m_queue_model_type, min_processing_time);
    } else {
        if(right){
-          cout << "[LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " costum right queue" << endl;
-          cout << "[LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " unmodified left queue" << endl;
+          cout << "################ [LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " costum right queue" << endl;
+          cout << "################ [LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " unmodified left queue" << endl;
           m_queue_models[RIGHT] = QueueModel::create(name+".link-right",m_core_id, m_queue_model_type, m_hmc_ext_link_bw.getRoundedLatency(8 * 14));
           m_queue_models[LEFT] = QueueModel::create(name+".link-left", m_core_id, m_queue_model_type, min_processing_time);
        } else if(left){
-          cout << "[LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " costum left queue" << endl;
-          cout << "[LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " unmodified right queue" << endl;
+          cout << "################ [LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " costum left queue" << endl;
+          cout << "################ [LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " unmodified right queue" << endl;
           m_queue_models[LEFT] = QueueModel::create(name+".link-left", m_core_id, m_queue_model_type, m_hmc_ext_link_bw.getRoundedLatency(8 * 14));
           m_queue_models[RIGHT] = QueueModel::create(name+".link-right", m_core_id, m_queue_model_type, min_processing_time);
        } else {
-          cout << "[LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " unmodified left queue" << endl;
-          cout << "[LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " unmodified right queue" << endl;
+          cout << "################ [LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " unmodified left queue" << endl;
+          cout << "################ [LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " unmodified right queue" << endl;
           m_queue_models[LEFT] = QueueModel::create(name+".link-left", m_core_id, m_queue_model_type, min_processing_time);
           m_queue_models[RIGHT] = QueueModel::create(name+".link-right", m_core_id, m_queue_model_type, min_processing_time);          
        }
       if(down){
-          cout << "[LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " costum down queue" << endl;
-          cout << "[LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " unmodified up queue" << endl;
+          cout << "################ [LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " costum down queue" << endl;
+          cout << "################ [LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " unmodified up queue" << endl;
           m_queue_models[DOWN] = QueueModel::create(name+".link-down", m_core_id, m_queue_model_type, m_hmc_ext_link_bw.getRoundedLatency(8 * 14));
           m_queue_models[UP] = QueueModel::create(name+".link-up", m_core_id, m_queue_model_type, min_processing_time);
       } else if(up){
-          cout << "[LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " costum up queue" << endl;
-          cout << "[LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " unmodified down queue" << endl;
+          cout << "################ [LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " costum up queue" << endl;
+          cout << "################ [LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " unmodified down queue" << endl;
           m_queue_models[UP] = QueueModel::create(name+".link-up", m_core_id, m_queue_model_type, m_hmc_ext_link_bw.getRoundedLatency(8 * 14));
           m_queue_models[DOWN] = QueueModel::create(name+".link-down", m_core_id, m_queue_model_type, min_processing_time);
       } else {
-          cout << "[LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " unmodified up queue" << endl;
-          cout << "[LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " unmodified down queue" << endl;
+          cout << "################ [LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " unmodified up queue" << endl;
+          cout << "################ [LINGXI]: in emesh_hop_by_hop. m_core_id: " << to_string(m_core_id) << " unmodified down queue" << endl;
           m_queue_models[UP] = QueueModel::create(name+".link-up", m_core_id, m_queue_model_type, min_processing_time);
           m_queue_models[DOWN] = QueueModel::create(name+".link-down", m_core_id, m_queue_model_type, min_processing_time);
       }
@@ -539,12 +539,12 @@ NetworkModelEMeshHopByHop::computeLatency(OutputDirection direction, SubsecondTi
             || (direction == RIGHT && std::find(m_list_right.begin(), m_list_right.end(), m_core_id) != m_list_right.end())
             || (direction == LEFT && std::find(m_list_left.begin(), m_list_left.end(), m_core_id) != m_list_left.end())){
 
-            cout << "[LINGXI]: in emesh_hop_by_hop. Stock processing_time: " << to_string(processing_time.getFS()) << endl;
+            //cout << "[LINGXI]: in emesh_hop_by_hop. Stock processing_time: " << to_string(processing_time.getFS()) << endl;
             processing_time = m_hmc_ext_link_bw.getRoundedLatency(num_bits);
-            cout << "core_id: " << to_string(m_core_id) 
-            << " direction (UP==0, DOWN==1, LEFT==2, RIGHT==3: " << to_string(direction) 
-            << " replaced stock processing_time with a custom time: " 
-            << to_string(processing_time.getFS()) << endl;
+            //cout << "core_id: " << to_string(m_core_id) 
+            //<< " direction (UP==0, DOWN==1, LEFT==2, RIGHT==3): " << to_string(direction) 
+            //<< " replaced stock processing_time with a custom time: " 
+            //<< to_string(processing_time.getFS()) << endl;
          }  
          } 
 
