@@ -1,8 +1,8 @@
 TARGET=pi
 include ../shared/Makefile.shared
 
-MPICC=mpicc
-MPILD=mpicc
+MPICC=mpicc.mpich
+MPILD=mpicc.mpich
 MPIRUN=mpirun
 
 MPI_CFLAGS=$(GRAPHITE_CFLAGS)

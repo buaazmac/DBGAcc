@@ -18,7 +18,7 @@ COMMON_LIB = libcommon.a
 all: $(OBJS)
 	ar -r $(COMMON_LIB) $(OBJS)
 	mv $(COMMON_LIB) ../lib
+	$(info ***** Common make finished****)
 
 $(OBJS_DIR)/%.cpp.o: $(SOURCE_DIR)/%.cpp
 	$(MPI_CXX) $(CXXFLAGS) -o $@ -c $<
-
