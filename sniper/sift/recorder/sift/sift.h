@@ -1,1 +1,1 @@
-/media/zmac/Research/PIM/debruijn/DBGAcc/sniper/sift/recorder/../../sift/sift.h
+/home/muzhou/DenovoAssembly/git-repositories/DBGAcc/sniper/sift/recorder/../../sift/sift.h

@@ -27,7 +27,8 @@ all: step1
 #	strip $(KMERGEN)
 
 step1: step1_clean $(STEP1_OBJS)
-	$(MPI_CXX) $(CXXFLAGS) -o $(STEP1) $(SHARED_OBJS) $(STEP1_OBJS) $(COMMON_LIB) $(TBB_LIB) $(LIBS) $(MYLIBS)
+	$(info ***** step1: step1_clean finished****)
+	$(MPI_CXX) $(CXXFLAGS) -o $(STEP1) $(SHARED_OBJS) $(STEP1_OBJS) $(COMMON_LIB) $(TBB_LIB) $(LIBS) $(MYLIBS) -lpthread
 	strip $(STEP1)
 
 
@@ -40,8 +41,9 @@ step1: step1_clean $(STEP1_OBJS)
 step1_clean:
 	rm -rf $(OBJS_DIR)/*
 	make -C $(COMMON_DIR) STAGE=ALSHA_KMERGEN USE_MPI=1
+	$(info ***** step1_clean make1****)
 	make -C $(COMMON_DIR) STAGE=ALSHA_PREGRAPH USE_MPI=1
-
+	$(info ***** step1_clean make2****)
 
 #pregraph: pregraph_clean $(PREGRAPH_OBJS)
 #	$(MPI_CXX) $(CXXFLAGS) -o $(PREGRAPH) $(SHARED_OBJS) $(PREGRAPH_OBJS) $(COMMON_LIB) $(TBB_LIB) $(LIBS) $(MYLIBS)
