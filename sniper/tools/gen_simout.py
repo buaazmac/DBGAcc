@@ -135,6 +135,12 @@ def generate_simout(jobid = None, resultsdir = None, partial = None, output = sy
     ('     InstExeCpPIM Cycle', 'interval_timer.instExeCpLatencyPim', format_int),
     ('     InstLoadCpPIM Cycle', 'interval_timer.instLoadCpLatencyPim', format_int),
     ('     InstStoreCpPIM Cycle', 'interval_timer.instStoreCpLatencyPim', format_int),
+    ('  NoC Total Bytes Sent', 'network.shmem-1.mesh.bytes-out', format_int),
+    ('  NoC Total Packets Sent', 'network.shmem-1.mesh.packets-out', format_int),
+    ('  NoC Total Bytes Received', 'network.shmem-1.mesh.bytes-in', format_int),
+    ('  NoC Total Packets Received', 'network.shmem-1.mesh.packets-in', format_int),
+    ('  NoC Contention Delay (ns)', 'network.shmem-1.mesh.contention-delay', format_ns(0)),
+    ('  NoC Total Delay (ns)', 'network.shmem-1.mesh.total-delay', format_ns(0)),
   ]
 
   if 'branch_predictor.num-incorrect' in results:
