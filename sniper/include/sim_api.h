@@ -21,6 +21,9 @@
 #define SIM_PIM_OFFLOAD_START 15 // [ZMAC] magic number for starting PIM offloading phase
 #define SIM_PIM_OFFLOAD_END 16 // [ZMAC] magic number for ending PIM offloading phase
 
+#define SIM_NDP_DATA_RANGE_GLOBAL 17 // [ZMAC] magic number of indicating global NDP data range
+#define SIM_NDP_DATA_RANGE_LOCAL 18 // [ZMAC] magic number of indicating local NDP data range
+
 #define SIM_OPT_INSTRUMENT_DETAILED    0
 #define SIM_OPT_INSTRUMENT_WARMUP      1
 #define SIM_OPT_INSTRUMENT_FASTFORWARD 2
@@ -137,5 +140,8 @@
 
 #define SimPimOffloadStart()      SimMagic0(SIM_PIM_OFFLOAD_START) // [ZMAC] interface for starting PIM offloading
 #define SimPimOffloadEnd()        SimMagic0(SIM_PIM_OFFLOAD_END) // [ZMAC] interface for ending PIM offloading
+
+#define SimNdpRangeGlobal(arg0, arg1)   SimMagic2(SIM_NDP_DATA_RANGE_GLOBAL, arg0, arg1) // [NDP] indicate a data range as NDP data that distributed globally 
+#define SimNdpRangeLocal(arg0, arg1)    SimMagic2(SIM_NDP_DATA_RANGE_LOCAL, arg0, arg1) // [NDP] indicate a data range as NDP data to a specific core
 
 #endif /* __SIM_API */
