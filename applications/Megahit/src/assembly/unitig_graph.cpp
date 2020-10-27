@@ -17,9 +17,23 @@ UnitigGraph::UnitigGraph(SDBG *sdbg)
   SpinLock path_lock;
   AtomicBitVector locks(sdbg_->size());
   size_t count_palindrome = 0;
+
+
 // assemble simple paths
 #pragma omp parallel for reduction(+ : count_palindrome)
   for (uint64_t edge_idx = 0; edge_idx < sdbg_->size(); ++edge_idx) {
+    // [NDP] recording normal/rc path
+    int tid = omp_get_thread_num();
+    std::string access_path, access_rc_path;
+    access_path += "[normal - ";
+    access_path += std::to_string(tid);
+    access_path += ",";
+    access_path += std::to_string(edge_idx);
+    access_path += "] ";
+    access_rc_path += "[rc - ";
+    access_rc_path += std::to_string(tid);
+    access_rc_path += "] ";
+
     if (sdbg_->IsValidEdge(edge_idx) &&
         sdbg_->NextSimplePathEdge(edge_idx) == SDBG::kNullID &&
         locks.try_lock(edge_idx)) {
@@ -29,8 +43,16 @@ UnitigGraph::UnitigGraph(SDBG *sdbg)
       int64_t depth = sdbg_->EdgeMultiplicity(edge_idx);
       uint32_t length = 1;
 
+      // [NDP] recording normal path
+      access_path += std::to_string(edge_idx);
+      access_path += ",";
+
       while ((prev_edge = sdbg_->PrevSimplePathEdge(cur_edge)) !=
              SDBG::kNullID) {
+        // [NDP] recording normal path
+        access_path += std::to_string(prev_edge);
+        access_path += ",";
+
         cur_edge = prev_edge;
         if (!locks.try_lock(cur_edge)) {
           will_be_added = false;
@@ -48,6 +70,10 @@ UnitigGraph::UnitigGraph(SDBG *sdbg)
       uint64_t rc_end;
       assert(rc_start != SDBG::kNullID);
 
+      // [NDP] recording rc path
+      access_rc_path += std::to_string(rc_start);
+      access_rc_path += ",";
+
       if (!locks.try_lock(rc_start)) {
         rc_end = sdbg_->EdgeReverseComplement(cur_edge);
         if (std::max(edge_idx, cur_edge) < std::max(rc_start, rc_end)) {
@@ -60,6 +86,10 @@ UnitigGraph::UnitigGraph(SDBG *sdbg)
         bool extend_full = true;
         while ((rc_cur_edge = sdbg_->NextSimplePathEdge(rc_cur_edge)) !=
                SDBG::kNullID) {
+          // [NDP] recording rc path
+          access_rc_path += std::to_string(rc_cur_edge);
+          access_rc_path += ",";
+
           rc_end = rc_cur_edge;
           if (!locks.try_lock(rc_cur_edge)) {
             extend_full = false;
@@ -78,16 +108,34 @@ UnitigGraph::UnitigGraph(SDBG *sdbg)
                                length);
         count_palindrome += cur_edge == rc_start;
       }
+      // [NDP] output normal & rc path
+      #pragma omp critical
+      {
+          std::cout << edge_idx << std::endl;
+          std::cout << access_path << std::endl;
+          std::cout << access_rc_path << std::endl;
+      }
     }
   }
   xinfo("Graph size without loops: {}, palindrome: {}\n", vertices_.size(),
         count_palindrome);
+
+  // [NDP] start printing loop path
+  std::cout << "Loop" << std::endl;
 
   // assemble looped paths
   std::mutex loop_lock;
   size_t count_loop = 0;
 #pragma omp parallel for
   for (size_t edge_idx = 0; edge_idx < sdbg_->size(); ++edge_idx) {
+      
+    // [NDP] recording normal/rc path
+    int tid = omp_get_thread_num();
+    std::string access_loop_path;
+    access_loop_path += "[loop - ";
+    access_loop_path += std::to_string(tid);
+    access_loop_path += "] ";
+
     if (!locks.at(edge_idx) && sdbg_->IsValidEdge(edge_idx)) {
       std::lock_guard<std::mutex> lk(loop_lock);
       if (!locks.at(edge_idx)) {
@@ -98,12 +146,20 @@ UnitigGraph::UnitigGraph(SDBG *sdbg)
         // whether it is marked before entering the loop
         bool rc_marked = locks.at(rc_edge);
 
+        // [NDP] recording loop path
+        access_loop_path += std::to_string(edge_idx);
+        access_loop_path += ",";
+
         while (!locks.at(cur_edge)) {
           locks.set(cur_edge);
           depth += sdbg_->EdgeMultiplicity(cur_edge);
           ++length;
           cur_edge = sdbg_->PrevSimplePathEdge(cur_edge);
           assert(cur_edge != SDBG::kNullID);
+
+          // [NDP] recording loop path
+          access_loop_path += std::to_string(cur_edge);
+          access_loop_path += ",";
         }
         assert(cur_edge == edge_idx);
 
@@ -115,6 +171,10 @@ UnitigGraph::UnitigGraph(SDBG *sdbg)
                                  length, true);
           count_loop += 1;
         }
+      }
+      #pragma omp critical
+      {
+          std::cout << access_loop_path << std::endl;
       }
     }
   }

@@ -101,8 +101,7 @@ void ParseAsmOption(int argc, char *argv[]) {
 
 }  // namespace
 
-//./assemble_bench -s ../build_sdbg/output/bench -o ../assemble/output/ -t 8 --min_standalone 200 --prune_level 2 --merge_len 20 --merge_similar 0.95 --cleaning_rounds 5 --disconnect_ratio 0.1 --low_local_ratio 0.2 --cleaning_rounds 5
---min_depth 2 --bubble_level 2 --max_tip_len -1 --is_final_round
+//./assemble_bench -s ../build_sdbg/output/bench -o ../assemble/output/ -t 8 --min_standalone 200 --prune_level 2 --merge_len 20 --merge_similar 0.95 --cleaning_rounds 5 --disconnect_ratio 0.1 --low_local_ratio 0.2 --cleaning_rounds 5 --min_depth 2 --bubble_level 2 --max_tip_len -1 --is_final_round
 int main(int argc, char **argv) {
   AutoMaxRssRecorder recorder;
   ParseAsmOption(argc, argv);
@@ -148,7 +147,13 @@ int main(int argc, char **argv) {
   // construct unitig graph
   timer.reset();
   timer.start();
+
+  SimRoiStart();
+
   UnitigGraph graph(&dbg);
+  
+  SimRoiEnd();
+  
   timer.stop();
   xinfo("unitig graph size: {}, time for building: {.3}\n", graph.size(),
         timer.elapsed());
