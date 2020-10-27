@@ -1,1 +1,1 @@
-/media/zmac/Research/PIM/debruijn/DBGAcc/sniper/sift/recorder/../../sift/zfstream.cc
+/home/muzhou/DenovoAssembly/git-repositories/DBGAcc/sniper/sift/recorder/../../sift/zfstream.cc

@@ -16,7 +16,8 @@ export TBB_LIB = -L $(TBB_DIR)/lib -ltbb -ltbbmalloc
 #directory for Message Passing Interface (MPI) library
 #please give the correct values for these macros
 export MPI_CXX = mpicxx
-export MPI_DIR = /usr/lib/openmpi
+#export MPI_DIR = /usr/lib/openmpi
+export MPI_DIR = /usr/lib/mpich
 export MPI_INC = -I $(MPI_DIR)/include
 export MPI_LIB = -L $(MPI_DIR)/lib -lmpi
 

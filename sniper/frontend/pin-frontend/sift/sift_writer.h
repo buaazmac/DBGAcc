@@ -1,1 +1,1 @@
-/media/zmac/Research/PIM/debruijn/DBGAcc/sniper/frontend/pin-frontend/../../sift/sift_writer.h
+/home/muzhou/DenovoAssembly/git-repositories/DBGAcc/sniper/frontend/pin-frontend/../../sift/sift_writer.h

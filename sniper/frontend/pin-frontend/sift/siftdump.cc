@@ -1,1 +1,1 @@
-/media/zmac/Research/PIM/debruijn/DBGAcc/sniper/frontend/pin-frontend/../../sift/siftdump.cc
+/home/muzhou/DenovoAssembly/git-repositories/DBGAcc/sniper/frontend/pin-frontend/../../sift/siftdump.cc
